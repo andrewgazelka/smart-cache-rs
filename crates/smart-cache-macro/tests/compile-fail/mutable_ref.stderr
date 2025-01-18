@@ -1,0 +1,5 @@
+error: cached functions must be pure - mutable references are not allowed
+ --> tests/compile-fail/mutable_ref.rs:4:24
+  |
+4 | fn impure_function(x: &mut i32) -> i32 {
+  |                        ^^^

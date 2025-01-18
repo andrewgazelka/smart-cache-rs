@@ -2,7 +2,7 @@ use proc_macro::TokenStream;
 use proc_macro2::Span;
 use quote::quote;
 use sha2::{Digest, Sha256};
-use syn::{parse_macro_input, FnArg, Ident, ItemFn, Pat, ReturnType};
+use syn::{parse_macro_input, FnArg, Ident, ItemFn, Pat, ReturnType, Type};
 
 fn hash_token_stream(tokens: &proc_macro2::TokenStream) -> [u8; 32] {
     // Convert TokenStream to a string representation
@@ -18,9 +18,47 @@ fn hash_token_stream(tokens: &proc_macro2::TokenStream) -> [u8; 32] {
     hasher.finalize().into()
 }
 
+fn check_for_mutable_refs(
+    fn_inputs: &syn::punctuated::Punctuated<FnArg, syn::token::Comma>,
+) -> Result<(), syn::Error> {
+    for arg in fn_inputs {
+        let FnArg::Typed(pat_type) = arg else {
+            continue;
+        };
+
+        let Type::Reference(type_ref) = &*pat_type.ty else {
+            continue;
+        };
+
+        let Some(mutability) = &type_ref.mutability else {
+            continue;
+        };
+
+        return Err(syn::Error::new_spanned(
+            mutability,
+            "cached functions must be pure - mutable references are not allowed",
+        ));
+    }
+    Ok(())
+}
+
 #[proc_macro_attribute]
 pub fn cached(_attr: TokenStream, item: TokenStream) -> TokenStream {
-    let mut input_fn = parse_macro_input!(item as ItemFn);
+    let input_fn = parse_macro_input!(item as ItemFn);
+
+    // Check for mutable references and return the original function with error if found
+    if let Err(err) = check_for_mutable_refs(&input_fn.sig.inputs) {
+        let compiler_err = err.to_compile_error();
+
+        return quote! {
+            #input_fn
+
+            #compiler_err
+        }
+        .into();
+    }
+
+    let mut input_fn = input_fn;
 
     let mut fn_with_name_inner = input_fn.clone();
     fn_with_name_inner.sig.ident = Ident::new("inner", Span::call_site());
