@@ -1,7 +1,7 @@
 use smart_cache_macro::cached;
 
 #[cached]
-fn expensive_computation(x: String, y: i32) -> String {
+fn expensive_computation(x: &str, y: i32) -> String {
     use std::{thread, time::Duration};
 
     thread::sleep(Duration::from_secs(3));
@@ -11,6 +11,6 @@ fn expensive_computation(x: String, y: i32) -> String {
 
 #[test]
 fn test_cached() {
-    let x = expensive_computation("hello".to_string(), 2);
+    let x = expensive_computation("hello", 2);
     println!("{x}");
 }

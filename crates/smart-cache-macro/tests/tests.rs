@@ -4,5 +4,5 @@ fn compile_tests() {
     t.compile_fail("tests/compile-fail/*.rs");
 
     // skip for now as refs are broken (#1)
-    // t.pass("tests/success/*.rs");
+    t.pass("tests/success/*.rs");
 }
