@@ -1,0 +1,21 @@
+[package]
+name = "smart-cache-macro"
+version = "0.1.0"
+edition = "2021"
+authors = ["Andrew Gazelka <andrew.gazelka@gmail.com>"]
+description = "Procedural macros for smart-cache"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/andrewgazelka/smart-cache"
+documentation = "https://docs.rs/smart-cache-macro"
+readme = "../../README.md"
+keywords = ["cache", "macro", "proc-macro"]
+categories = ["caching", "development-tools"]
+
+[lib]
+proc-macro = true
+
+[dependencies]
+quote = "1.0"
+syn = { version = "2.0", features = ["full"] }
+proc-macro2 = "1.0"
+sha2 = "0.11.0-pre.4"
