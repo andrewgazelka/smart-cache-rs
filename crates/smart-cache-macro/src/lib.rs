@@ -4,63 +4,6 @@ use quote::quote;
 use sha2::{Digest, Sha256};
 use syn::{parse_macro_input, FnArg, Ident, ItemFn, Pat, ReturnType, Type};
 
-/// A procedural macro that automatically caches function results based on its input parameters.
-///
-/// This macro implements function-level caching by serializing the function's input parameters
-/// and using them as a cache key. The function's result is then stored and can be retrieved
-/// when the function is called again with the same parameters.
-///
-/// # Requirements
-///
-/// - All function parameters must implement `Archive`, `Serialize`, and `Deserialize` from `rkyv`
-/// - The return type must implement `Archive`, `Serialize`, and `Deserialize` from `rkyv`
-/// - The function must be pure (no mutable references allowed)
-///
-/// # Examples
-///
-/// ```rust
-/// use smart_cache::cached;
-///
-/// #[cached]
-/// fn fibonacci(n: u64) -> u64 {
-///     if n <= 1 {
-///         return n;
-///     }
-///     fibonacci(n - 1) + fibonacci(n - 2)
-/// }
-///
-/// // First call will compute and cache the result
-/// let result1 = fibonacci(10);
-///
-/// // Second call will retrieve from cache
-/// let result2 = fibonacci(10);
-///
-/// assert_eq!(result1, result2);
-/// ```
-///
-/// Works with multiple parameters and reference types:
-///
-/// ```rust
-/// use smart_cache_macro::cached;
-///
-/// #[cached]
-/// fn process_data(data: &[u8], threshold: u32) -> Vec<u8> {
-///     // Expensive computation here...
-///     data.iter()
-///         .filter(|&&x| x as u32 > threshold)
-///         .copied()
-///         .collect()
-/// }
-/// ```
-///
-/// # How it works
-///
-/// The macro:
-/// 1. Creates a unique cache key from the function's parameters and a hash of the function body
-/// 2. Checks if a result exists in the cache for this key
-/// 3. If found, deserializes and returns the cached result
-/// 4. If not found, executes the function, caches the result, and returns it
-///
 fn hash_token_stream(tokens: &proc_macro2::TokenStream) -> [u8; 32] {
     // Convert TokenStream to a string representation
     let token_string = tokens.to_string();
