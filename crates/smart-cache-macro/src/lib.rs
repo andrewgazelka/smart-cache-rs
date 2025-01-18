@@ -19,7 +19,7 @@ use syn::{parse_macro_input, FnArg, Ident, ItemFn, Pat, ReturnType, Type};
 /// # Examples
 ///
 /// ```rust
-/// use smart_cache::cached;
+/// use smart_cache_macro::cached;
 ///
 /// #[cached]
 /// fn fibonacci(n: u64) -> u64 {
