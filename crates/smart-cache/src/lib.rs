@@ -1,5 +1,7 @@
 use std::path::PathBuf;
 
+pub use smart_cache_macro::cached;
+
 use eyre::Result;
 use once_cell::sync::Lazy;
 use redb::{Database, TableDefinition};
