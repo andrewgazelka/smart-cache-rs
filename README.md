@@ -3,6 +3,7 @@
 [![Crates.io](https://img.shields.io/crates/v/smart-cache.svg)](https://crates.io/crates/smart-cache)
 [![Documentation](https://docs.rs/smart-cache/badge.svg)](https://docs.rs/smart-cache)
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](README.md)
+[![Issues](https://img.shields.io/github/issues/andrewgazelka/smart-cache-rs)](https://github.com/andrewgazelka/smart-cache-rs/issues)
 
 A Rust library for smart function caching with automatic invalidation. Cache expensive function calls with a simple attribute macro.
 
