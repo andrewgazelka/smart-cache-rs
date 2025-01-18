@@ -42,6 +42,14 @@ fn check_for_mutable_refs(
     Ok(())
 }
 
+fn get_param_type(ty: &Type) -> &Type {
+    if let Type::Reference(type_ref) = ty {
+        &type_ref.elem
+    } else {
+        ty
+    }
+}
+
 #[proc_macro_attribute]
 pub fn cached(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let input_fn = parse_macro_input!(item as ItemFn);
@@ -99,7 +107,7 @@ pub fn cached(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let param_types: Vec<_> = fn_inputs
         .iter()
         .filter_map(|arg| match arg {
-            FnArg::Typed(pat_type) => Some(&pat_type.ty),
+            FnArg::Typed(pat_type) => Some(get_param_type(&pat_type.ty)),
             _ => None,
         })
         .collect();
