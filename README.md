@@ -50,7 +50,7 @@ use smart_cache_macro::cached;
 
 // First run of your program:
 #[cached]
-fn expensive_computation(x: String, y: i32) -> String {
+fn expensive_computation(x: &str, y: i32) -> String {
     println!("Computing...");  // We'll see when the function actually runs
     std::thread::sleep(std::time::Duration::from_secs(3));
     format!("example computation {}_{}", x, y)
@@ -58,24 +58,24 @@ fn expensive_computation(x: String, y: i32) -> String {
 
 fn main() {
     // First call: takes 3 seconds, prints "Computing..."
-    let result1 = expensive_computation("hello".to_string(), 2);
+    let result1 = expensive_computation("hello", 2);
     println!("{}", result1); // "example computation hello_2"
 
     // Second call: instant, no "Computing..." message
-    let result2 = expensive_computation("hello".to_string(), 2);
+    let result2 = expensive_computation("hello", 2);
     println!("{}", result2); // "example computation hello_2"
 }
 
 // If you restart your program, the cache persists:
 fn main() {
     // Still instant, no "Computing..." message, uses cached result from previous run
-    let result = expensive_computation("hello".to_string(), 2);
+    let result = expensive_computation("hello", 2);
     println!("{}", result); // "example computation hello_2"
 }
 
 // If you modify the function, the cache invalidates automatically:
 #[cached]
-fn expensive_computation(x: String, y: i32) -> String {
+fn expensive_computation(x: &str, y: i32) -> String {
     println!("Computing...");
     std::thread::sleep(std::time::Duration::from_secs(3));
     format!("new computation {}_{}", x, y)  // Changed the string
@@ -84,7 +84,7 @@ fn expensive_computation(x: String, y: i32) -> String {
 fn main() {
     // Cache was invalidated due to function change
     // Takes 3 seconds and prints "Computing..." again
-    let result = expensive_computation("hello".to_string(), 2);
+    let result = expensive_computation("hello", 2);
     println!("{}", result); // "new computation hello_2"
 }
 ```
