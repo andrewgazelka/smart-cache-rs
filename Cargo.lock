@@ -430,6 +430,7 @@ dependencies = [
  "rkyv",
  "smart-cache-macro",
  "tracing",
+ "trybuild",
 ]
 
 [[package]]
@@ -438,10 +439,8 @@ version = "0.2.0"
 dependencies = [
  "proc-macro2",
  "quote",
- "rkyv",
  "sha2",
  "syn",
- "trybuild",
 ]
 
 [[package]]
